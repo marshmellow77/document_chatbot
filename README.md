@@ -2,4 +2,4 @@
 A repository for a document chatbot
 
 ## Architecture diagram for SageMaker implementation
-![alt text](assets/architecture.png)
+![alt text](assets/arch.png)

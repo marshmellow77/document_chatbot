@@ -3,52 +3,42 @@ from streamlit_chat import message
 from langchain.chains import ConversationChain
 from langchain.memory import ConversationBufferMemory
 from langchain.llms.sagemaker_endpoint import ContentHandlerBase, SagemakerEndpoint
-from langchain.llms.openai import OpenAI
 from typing import Dict
 import json
 from io import StringIO
 from random import randint
-from dotenv import load_dotenv
-import os
-
-# Load the .env file
-load_dotenv()
-
-# Get the API key from the .env file
-api_key = os.getenv('API_KEY')
 
 st.set_page_config(page_title="Document Analysis", page_icon=":robot:")
 st.header("Chat with your document 📄")
 
 
-# class ContentHandler(ContentHandlerBase):
-#     content_type = "application/json"
-#     accepts = "application/json"
-#
-#     def transform_input(self, prompt: str, model_kwargs: Dict) -> bytes:
-#         input_str = json.dumps({"prompt": prompt, "maxTokens": 100, "temperature": 0, "stopSequences": ["Human"]})
-#         return input_str.encode('utf-8')
-#
-#     def transform_output(self, output: bytes) -> str:
-#         response_json = output.read()
-#         res = json.loads(response_json)
-#         ans = res['completions'][0]['data']['text']
-#         return ans
+class ContentHandler(ContentHandlerBase):
+    content_type = "application/json"
+    accepts = "application/json"
+
+    def transform_input(self, prompt: str, model_kwargs: Dict) -> bytes:
+        input_str = json.dumps({"prompt": prompt, "maxTokens": 100, "temperature": 0, "stopSequences": ["Human"]})
+        return input_str.encode('utf-8')
+
+    def transform_output(self, output: bytes) -> str:
+        response_json = output.read()
+        res = json.loads(response_json)
+        ans = res['completions'][0]['data']['text']
+        return ans
 
 
-# endpoint_name = "j2-jumbo-instruct"
-# content_handler = ContentHandler()
+endpoint_name = "j2-jumbo-instruct"
+content_handler = ContentHandler()
 
 
 @st.cache_resource
 def load_chain():
-    # llm = SagemakerEndpoint(
-    #     endpoint_name=endpoint_name,
-    #     region_name="us-east-1",
-    #     model_kwargs={"temperature": 1e-10},
-    #     content_handler=content_handler
-    # )
-    llm = OpenAI(model_name="gpt-4", temperature=0)
+    llm = SagemakerEndpoint(
+        endpoint_name=endpoint_name,
+        region_name="us-east-1",
+        model_kwargs={"temperature": 1e-10},
+        content_handler=content_handler
+    )
 
     memory = ConversationBufferMemory()
     chain = ConversationChain(llm=llm, memory=memory)

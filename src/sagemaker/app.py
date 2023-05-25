@@ -7,10 +7,6 @@ from typing import Dict
 import json
 from io import StringIO
 from random import randint
-# from dotenv import load_dotenv
-#
-# # Load the .env file
-# load_dotenv()
 
 st.set_page_config(page_title="Document Analysis", page_icon=":robot:")
 st.header("Chat with your document 📄")

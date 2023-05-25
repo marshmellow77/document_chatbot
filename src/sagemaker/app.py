@@ -2,17 +2,22 @@ import streamlit as st
 from streamlit_chat import message
 from langchain.chains import ConversationChain
 from langchain.memory import ConversationBufferMemory
-from langchain.llms.sagemaker_endpoint import ContentHandlerBase, SagemakerEndpoint
+from langchain.llms.sagemaker_endpoint import LLMContentHandler, SagemakerEndpoint
 from typing import Dict
 import json
 from io import StringIO
 from random import randint
+# from dotenv import load_dotenv
+#
+# # Load the .env file
+# load_dotenv()
 
 st.set_page_config(page_title="Document Analysis", page_icon=":robot:")
 st.header("Chat with your document 📄")
 
+
 # the content handler defines on how the input and output to the SM endpoint will be parsed
-class ContentHandler(ContentHandlerBase):
+class ContentHandler(LLMContentHandler):
     content_type = "application/json"
     accepts = "application/json"
 
@@ -37,10 +42,9 @@ def load_chain():
     llm = SagemakerEndpoint(
         endpoint_name=endpoint_name,
         region_name="us-east-1",
-        # model_kwargs={"temperature": 1e-10},
-        content_handler=content_handler
+        content_handler=content_handler,
+        credentials_profile_name="default"
     )
-
     memory = ConversationBufferMemory()
     chain = ConversationChain(llm=llm, memory=memory)
     return chain

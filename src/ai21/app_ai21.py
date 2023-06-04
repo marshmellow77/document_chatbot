@@ -2,87 +2,29 @@ import streamlit as st
 from streamlit_chat import message
 from langchain.chains import ConversationChain
 from langchain.memory import ConversationBufferMemory
-from langchain.llms.sagemaker_endpoint import LLMContentHandler, SagemakerEndpoint
-from typing import Dict
-import json
+from langchain.llms.ai21 import AI21
 from io import StringIO
 from random import randint
+from dotenv import load_dotenv
+import os
+
+# Load the .env file
+load_dotenv()
+
+# Get the API key from the .env file
+api_key = os.getenv('AI21_API_KEY')
 
 st.set_page_config(page_title="Document Analysis", page_icon=":robot:")
 st.header("Chat with your document 📄")
 
 
-# the content handler defines on how the input and output to the SM endpoint will be parsed
-# class ContentHandler(LLMContentHandler):
-#     content_type = "application/json"
-#     accepts = "application/json"
-#
-#     # for this chatbot demo we hardcode the inference parameters
-#     def transform_input(self, prompt: str, model_kwargs: Dict) -> bytes:
-#         input_str = json.dumps({"prompt": prompt, "maxTokens": 100, "temperature": 0, "stopSequences": ["Human"]})
-#         return input_str.encode('utf-8')
-#
-#     def transform_output(self, output: bytes) -> str:
-#         response_json = output.read()
-#         res = json.loads(response_json)
-#         ans = res['completions'][0]['data']['text']
-#         return ans
-#
-#
-# endpoint_name = "j2-jumbo-instruct"
-
-endpoint_name = "vicuna-13b-1-1-2023-06-03-15-48-50-242"
-
-class ContentHandler(LLMContentHandler):
-    content_type = "application/json"
-    accepts = "application/json"
-    len_prompt = 0
-
-    def transform_input(self, prompt: str, model_kwargs: Dict) -> bytes:
-        self.len_prompt = len(prompt)
-        input_str = json.dumps({"inputs": prompt, "parameters": {"max_new_tokens": 100, "stop": ["Human:"], "do_sample": False, "repetition_penalty": 1.1}})
-        return input_str.encode('utf-8')
-
-    def transform_output(self, output: bytes) -> str:
-        response_json = output.read()
-        res = json.loads(response_json)
-        ans = res[0]['generated_text'][self.len_prompt:]
-        # ans = ans[:ans.rfind("Human:")]
-        return ans
-
-
-# endpoint_name = "flan-t5-xxl-2023-06-04-10-42-26-348"
-#
-# class ContentHandler(LLMContentHandler):
-#     content_type = "application/json"
-#     accepts = "application/json"
-#     len_prompt = 0
-#
-#     def transform_input(self, prompt: str, model_kwargs: Dict) -> bytes:
-#         self.len_prompt = len(prompt)
-#         input_str = json.dumps({"inputs": prompt, "max_new_tokens": 100, "do_sample": False, "repetition_penalty": 1.3})
-#         return input_str.encode('utf-8')
-#
-#     def transform_output(self, output: bytes) -> str:
-#         response_json = output.read()
-#         ans = json.loads(response_json)
-#         ans = ans[:ans.rfind("Human:")]
-#         return ans
-
-content_handler = ContentHandler()
-
-
 @st.cache_resource
 def load_chain():
-    llm = SagemakerEndpoint(
-        endpoint_name=endpoint_name,
-        region_name="us-east-1",
-        content_handler=content_handler,
-        credentials_profile_name="default"
-    )
+    llm = AI21(model="j2-jumbo-instruct", temperature=0, stop=["Human:"])
     memory = ConversationBufferMemory()
     chain = ConversationChain(llm=llm, memory=memory)
     return chain
+
 
 # this is the object we will work with in the ap - it contains the LLM info as well as the memory
 chatchain = load_chain()

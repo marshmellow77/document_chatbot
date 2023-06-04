@@ -11,63 +11,25 @@ from random import randint
 st.set_page_config(page_title="Document Analysis", page_icon=":robot:")
 st.header("Chat with your document 📄")
 
+endpoint_name = "j2-jumbo-instruct"
+
 
 # the content handler defines on how the input and output to the SM endpoint will be parsed
-# class ContentHandler(LLMContentHandler):
-#     content_type = "application/json"
-#     accepts = "application/json"
-#
-#     # for this chatbot demo we hardcode the inference parameters
-#     def transform_input(self, prompt: str, model_kwargs: Dict) -> bytes:
-#         input_str = json.dumps({"prompt": prompt, "maxTokens": 100, "temperature": 0, "stopSequences": ["Human"]})
-#         return input_str.encode('utf-8')
-#
-#     def transform_output(self, output: bytes) -> str:
-#         response_json = output.read()
-#         res = json.loads(response_json)
-#         ans = res['completions'][0]['data']['text']
-#         return ans
-#
-#
-# endpoint_name = "j2-jumbo-instruct"
-
-endpoint_name = "vicuna-13b-1-1-2023-06-03-15-48-50-242"
-
 class ContentHandler(LLMContentHandler):
     content_type = "application/json"
     accepts = "application/json"
-    len_prompt = 0
 
+    # for this chatbot demo we hardcode the inference parameters
     def transform_input(self, prompt: str, model_kwargs: Dict) -> bytes:
-        self.len_prompt = len(prompt)
-        input_str = json.dumps({"inputs": prompt, "parameters": {"max_new_tokens": 100, "stop": ["Human:"], "do_sample": False, "repetition_penalty": 1.1}})
+        input_str = json.dumps({"prompt": prompt, "maxTokens": 100, "temperature": 0, "stopSequences": ["Human"]})
         return input_str.encode('utf-8')
 
     def transform_output(self, output: bytes) -> str:
         response_json = output.read()
         res = json.loads(response_json)
-        ans = res[0]['generated_text'][self.len_prompt:]
-        # ans = ans[:ans.rfind("Human:")]
+        ans = res['completions'][0]['data']['text']
         return ans
 
-
-# endpoint_name = "flan-t5-xxl-2023-06-04-10-42-26-348"
-#
-# class ContentHandler(LLMContentHandler):
-#     content_type = "application/json"
-#     accepts = "application/json"
-#     len_prompt = 0
-#
-#     def transform_input(self, prompt: str, model_kwargs: Dict) -> bytes:
-#         self.len_prompt = len(prompt)
-#         input_str = json.dumps({"inputs": prompt, "max_new_tokens": 100, "do_sample": False, "repetition_penalty": 1.3})
-#         return input_str.encode('utf-8')
-#
-#     def transform_output(self, output: bytes) -> str:
-#         response_json = output.read()
-#         ans = json.loads(response_json)
-#         ans = ans[:ans.rfind("Human:")]
-#         return ans
 
 content_handler = ContentHandler()
 

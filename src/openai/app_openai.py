@@ -14,7 +14,7 @@ load_dotenv()
 # Get the API key from the .env file
 api_key = os.getenv('API_KEY')
 
-st.set_page_config(page_title="Document Analysis", page_icon=":robot:")
+st.set_page_config(page_title="Document Analysis (Model: GPT-4)", page_icon=":robot:")
 st.header("Chat with your document 📄")
 
 

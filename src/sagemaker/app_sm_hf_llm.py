@@ -8,8 +8,8 @@ import json
 from io import StringIO
 from random import randint
 
-st.set_page_config(page_title="Document Analysis (Model: Vicuna-13B)", page_icon=":robot:")
-st.header("Chat with your document 📄")
+st.set_page_config(page_title="Document Analysis", page_icon=":robot:")
+st.header("Chat with your document 📄  (Model: Vicuna-13B)")
 
 endpoint_name = "vicuna-13b-1-1-2023-06-03-15-48-50-242"
 

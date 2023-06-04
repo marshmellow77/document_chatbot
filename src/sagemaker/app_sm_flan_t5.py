@@ -11,7 +11,7 @@ from random import randint
 st.set_page_config(page_title="Document Analysis (Model: FLAN-T5-XXL)", page_icon=":robot:")
 st.header("Chat with your document 📄")
 
-endpoint_name = "flan-t5-xxl-2023-06-04-10-42-26-348"
+endpoint_name = "flan-t5-xxl-2023-06-04-20-42-42-925"
 
 
 class ContentHandler(LLMContentHandler):

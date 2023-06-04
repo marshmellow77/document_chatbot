@@ -14,8 +14,8 @@ load_dotenv()
 # Get the API key from the .env file
 api_key = os.getenv('AI21_API_KEY')
 
-st.set_page_config(page_title="Document Analysis (Model: J2-Jumbo-Instruct))", page_icon=":robot:")
-st.header("Chat with your document 📄")
+st.set_page_config(page_title="Document Analysis", page_icon=":robot:")
+st.header("Chat with your document 📄 (Model: J2-Jumbo-Instruct)")
 
 
 @st.cache_resource

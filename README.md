@@ -20,3 +20,7 @@ The key advantage with this implementation is that no data ever leaves your AWS 
 5. Run the app with `streamlit run app.py`
 6. Upload a text file
 7. Start chatting 🤗
+
+
+## Running Streamlit apps in SageMaker Studio
+If you want to run Streamlit apps directly in SM Studio, you can do so with command `streamlit run <app>.py --server.port 6006`. Once the app has started you can go to `https://<YOUR_STUDIO_ID>.studio.<YOUR_REGION>.sagemaker.aws/jupyter/default/proxy/6006/` to launch the app.

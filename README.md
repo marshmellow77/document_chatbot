@@ -6,7 +6,7 @@ A repository for a document chatbot
 
 ## Architecture diagram for SageMaker implementation
 The key advantage with this implementation is that no data ever leaves your AWS account. The model is hosted in a SageMaker endpoint in your account and all inference requests will be sent to that endpoint.
-![alt text](assets/arch.png)
+![alt text](assets/arch3.png)
 
 
 ## How to run the application with a SageMaker Endpoint

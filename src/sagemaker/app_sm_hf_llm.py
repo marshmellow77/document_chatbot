@@ -9,9 +9,9 @@ from io import StringIO
 from random import randint
 
 st.set_page_config(page_title="Document Analysis", page_icon=":robot:")
-st.header("Chat with your document 📄  (Model: Vicuna-13B)")
+st.header("Chat with your document 📄  (Model: Falcon-40B-Instruct)")
 
-endpoint_name = "vicuna-13b-1-1-2023-06-03-15-48-50-242"
+endpoint_name = "falcon-40b-instruct-2023-06-08-06-42-03-876"
 
 
 class ContentHandler(LLMContentHandler):
@@ -28,7 +28,7 @@ class ContentHandler(LLMContentHandler):
         response_json = output.read()
         res = json.loads(response_json)
         ans = res[0]['generated_text'][self.len_prompt:]
-        # ans = ans[:ans.rfind("Human:")]
+        ans = ans[:ans.rfind("Human")].strip()
         return ans
 
 
